@@ -23,18 +23,23 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\Core\Form\Search\SearchDTO;
+use BaksDev\Core\Services\Paginator\PaginatorInterface;
+use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
+use BaksDev\Products\Product\Forms\ProductFilter\Admin\ProductFilterDTO;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+#[Autoconfigure(public: true)]
+interface AllProductsWithFourTochkiSettingsInterface
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public function search(SearchDTO $search): self;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    public function filter(ProductFilterDTO $filter): self;
 
+    public function filterFourTochkiProducts(FourTochkiProductsFilterDTO $fourTochkiProductsFilter): self;
+
+    /** Все продукты 4tochki в виде пагинатора с резалтами */
+    public function findPaginator(): PaginatorInterface;
 }

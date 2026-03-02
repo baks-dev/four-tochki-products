@@ -1,0 +1,27 @@
+page:
+  index: 'Product settings for 4tochki'
+  new: 'Add products for 4tochki'
+  edit: 'Edit products for 4tochki'
+  delete: 'Delete products for 4tochki'
+  description: 'Edit description template'
+
+breadcrumb:
+  index: 'Product settings for 4tochki'
+  new: 'Add products for 4tochki'
+  edit: 'Edit products for 4tochki'
+  delete: 'Delete products for 4tochki'
+
+success:
+  new: 'Product settings for 4tochki have been successfully added'
+  edit: 'Product settings for 4tochki have been successfully updated'
+  delete: 'Product settings for 4tochki were successfully deleted'
+  restore: 'Product settings for 4tochki have been successfully restored'
+
+danger:
+  new: '%s: Error adding product settings for 4tochki'
+  edit: '%s: Error when updating product settings for 4tochki'
+  delete: '%s: Error updating product settings for 4tochki'
+  restore: '%s: Error while restoring product settings for 4tochki'
+form:
+  delete:
+    h4: 'Are you sure you want to delete product settings for 4tochki?'

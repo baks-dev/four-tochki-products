@@ -1,0 +1,22 @@
+# Role
+ROLE_FOUR_TOCHKI_PRODUCTS:
+  header: '4tochki'
+  name: '4tochki product Settings'
+  desc: '4tochki product Settings'
+
+# Rules
+ROLE_FOUR_TOCHKI_PRODUCTS_INDEX:
+  name: 'View'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_NEW:
+  name: 'Add'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_EDIT:
+  name: 'Edit'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_DELETE:
+  name: 'Delete'
+  desc: ''

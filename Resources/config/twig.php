@@ -23,18 +23,15 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\BaksDevFourTochkiProductsBundle;
+use Symfony\Config\TwigConfig;
 
+return static function(TwigConfig $twig) {
 
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
-
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-}
+    $twig->path(
+        BaksDevFourTochkiProductsBundle::PATH.implode(DIRECTORY_SEPARATOR, ['Resources', 'view', '']), //.'Resources/view',
+        'four-tochki-products'
+    );
+};

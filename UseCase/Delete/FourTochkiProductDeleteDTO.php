@@ -23,18 +23,31 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\UseCase\Delete;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\Entity\FourTochkiProductInterface;
+use BaksDev\FourTochki\Products\Type\Id\FourTochkiProductUid;
+use Symfony\Component\Validator\Constraints as Assert;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+/** @see FourTochkiProduct */
+final class FourTochkiProductDeleteDTO implements FourTochkiProductInterface
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    private FourTochkiProductUid $id;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    public function getId(): FourTochkiProductUid
+    {
+        return $this->id;
+    }
 
+    public function setId(FourTochkiProductUid|string $id): void
+    {
+        if(is_string($id))
+        {
+            $id = new FourTochkiProductUid($id);
+        }
+
+        $this->id = $id;
+    }
 }

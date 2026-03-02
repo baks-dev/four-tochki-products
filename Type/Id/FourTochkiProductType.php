@@ -23,18 +23,19 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\Type\Id;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\Core\Type\UidType\UidType;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+final class FourTochkiProductType extends UidType
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public function getClassType(): string
+    {
+        return FourTochkiProductUid::class;
+    }
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
-
+    public function getName(): string
+    {
+        return FourTochkiProductUid::TYPE;
+    }
 }

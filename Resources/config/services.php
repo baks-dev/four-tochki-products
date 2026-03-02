@@ -23,18 +23,27 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\BaksDevFourTochkiProductsBundle;
 
+return static function(ContainerConfigurator $configurator) {
 
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    $services = $configurator->services()
+        ->defaults()
+        ->autowire()
+        ->autoconfigure();
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    $NAMESPACE = BaksDevFourTochkiProductsBundle::NAMESPACE;
+    $PATH = BaksDevFourTochkiProductsBundle::PATH;
 
-}
+    $services->load($NAMESPACE, $PATH)
+        ->exclude([
+            $PATH.'{Entity,Resources,Type}',
+            $PATH.'**'.DIRECTORY_SEPARATOR.'*Message.php',
+            $PATH.'**'.DIRECTORY_SEPARATOR.'*Result.php',
+            $PATH.'**'.DIRECTORY_SEPARATOR.'*DTO.php',
+            $PATH.'**'.DIRECTORY_SEPARATOR.'*Test.php',
+        ]);
+
+};

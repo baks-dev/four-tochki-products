@@ -23,18 +23,39 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\UseCase\NewEdit;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\Entity\FourTochkiProduct;
+use BaksDev\FourTochki\Products\Messenger\FourTochkiProductMessage;
+use BaksDev\Core\Entity\AbstractHandler;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+final class FourTochkiProductHandler extends AbstractHandler
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public function handle(FourTochkiProductDTO $command): string|FourTochkiProduct
+    {
+        /** Добавляем command для валидации и гидрации */
+        $this->setCommand($command);
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+        /** @var FourTochkiProduct $entity */
+        $entity = $this->prePersistOrUpdate(
+            FourTochkiProduct::class,
+            ['id' => $command->getFourTochkiProductUid()]
+        );
 
+        /** Валидация всех объектов */
+        if($this->validatorCollection->isInvalid())
+        {
+            return $this->validatorCollection->getErrorUniqid();
+        }
+
+        $this->flush();
+
+        $this->messageDispatch
+            ->dispatch(
+                message: new FourTochkiProductMessage($entity->getId()),
+                transport: 'four-tochki-products',
+            );
+
+        return $entity;
+    }
 }

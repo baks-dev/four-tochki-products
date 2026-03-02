@@ -23,18 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\UseCase\NewEdit\Profile;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\Entity\Profile\FourTochkiProductProfileInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use Symfony\Component\Validator\Constraints as Assert;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+/** @see FourTochkiProductProfile */
+final class FourTochkiProductProfileDTO implements FourTochkiProductProfileInterface
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    /** Значение свойства */
+    #[Assert\NotBlank]
+    private ?UserProfileUid $value = null;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    /**
+     * Значение свойства
+     *
+     * @see FourTochkiProductProfile
+     */
+    public function getValue(): ?UserProfileUid
+    {
+        return $this->value;
+    }
 
+    public function setValue(UserProfileUid $value): self
+    {
+        $this->value = $value;
+        return $this;
+    }
 }
