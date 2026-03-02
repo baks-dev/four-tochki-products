@@ -23,18 +23,17 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\BaksDevFourTochkiProductsBundle;
+use Symfony\Config\FrameworkConfig;
 
+return static function(FrameworkConfig $config) {
 
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
-
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-}
+    $config
+        ->translator()
+        ->paths([BaksDevFourTochkiProductsBundle::PATH.implode(
+            DIRECTORY_SEPARATOR,
+                ['Resources', 'translations', '']
+            )]); // .'Resources/translations/']);
+};

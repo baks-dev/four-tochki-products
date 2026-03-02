@@ -1,0 +1,22 @@
+# Роль
+ROLE_FOUR_TOCHKI_PRODUCTS:
+  header: '4tochki'
+  name: 'Настройки продукта 4tochki'
+  desc: 'Настройки продукта 4tochki'
+
+# Правила
+ROLE_FOUR_TOCHKI_PRODUCTS_INDEX:
+  name: 'Просмотр'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_NEW:
+  name: 'Добавить'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_EDIT:
+  name: 'Редактировать'
+  desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_DELETE:
+  name: 'Удалить'
+  desc: ''

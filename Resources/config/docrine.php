@@ -23,18 +23,30 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\BaksDevFourTochkiProductsBundle;
+use BaksDev\FourTochki\Products\Type\Id\FourTochkiProductType;
+use BaksDev\FourTochki\Products\Type\Id\FourTochkiProductUid;
+use Symfony\Config\DoctrineConfig;
 
+return static function(DoctrineConfig $doctrine) {
 
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    $doctrine
+        ->dbal()
+        ->type(FourTochkiProductUid::TYPE)
+        ->class(FourTochkiProductType::class);
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    $emDefault = $doctrine
+        ->orm()
+        ->entityManager('default')
+        ->autoMapping(true);
 
-}
+    $emDefault
+        ->mapping('four-tochki-products')
+        ->type('attribute')
+        ->dir(BaksDevFourTochkiProductsBundle::PATH.'Entity')
+        ->isBundle(false)
+        ->prefix(BaksDevFourTochkiProductsBundle::NAMESPACE.'\\Entity')
+        ->alias('four-tochki-products');
+};

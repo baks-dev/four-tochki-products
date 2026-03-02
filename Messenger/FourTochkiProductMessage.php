@@ -23,18 +23,22 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products;
+namespace BaksDev\FourTochki\Products\Messenger;
 
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\FourTochki\Products\Type\Id\FourTochkiProductUid;
 
-
-/**
- * @note: Индекс сортировки 480
- */
-class BaksDevFourTochkiProductsBundle extends AbstractBundle
+final class FourTochkiProductMessage
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    /** Внутренний (системный) идентификатор продукта FourTochki */
+    private FourTochkiProductUid $id;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    public function __construct(FourTochkiProductUid $id)
+    {
+        $this->id = $id;
+    }
 
+    public function getId(): FourTochkiProductUid
+    {
+        return $this->id;
+    }
 }
