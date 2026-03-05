@@ -23,22 +23,28 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock;
+namespace BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice;
 
 use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
+use BaksDev\Products\Product\Type\Offers\Id\ProductOfferUid;
 use BaksDev\Products\Product\Type\Offers\Variation\ConstId\ProductVariationConst;
+use BaksDev\Products\Product\Type\Offers\Variation\Id\ProductVariationUid;
 use BaksDev\Products\Product\Type\Offers\Variation\Modification\ConstId\ProductModificationConst;
+use BaksDev\Products\Product\Type\Offers\Variation\Modification\Id\ProductModificationUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use BaksDev\Users\User\Type\Id\UserUid;
 
-final readonly class UpdateOneFourTochkiProductStockMessage
+final readonly class UpdateOneFourTochkiProductPriceMessage
 {
     private string $product;
 
-    private string $user;
-
     private string $profile;
+
+    private string $offerId;
+
+    private string $variationId;
+
+    private string $modificationId;
 
     private string $offerConst;
 
@@ -48,16 +54,20 @@ final readonly class UpdateOneFourTochkiProductStockMessage
 
     public function __construct(
         ProductUid $product,
+        ProductOfferUid $offer,
+        ProductVariationUid $variation,
+        ProductModificationUid $modification,
         ProductOfferConst $offerConst,
         ProductVariationConst $variationConst,
         ProductModificationConst $modificationConst,
-        UserUid $user,
         UserProfileUid $profile,
     )
     {
         $this->product = (string) $product;
-        $this->user = (string) $user;
         $this->profile = (string) $profile;
+        $this->offerId = (string) $offer;
+        $this->variationId = (string) $variation;
+        $this->modificationId = (string) $modification;
         $this->offerConst = (string) $offerConst;
         $this->variationConst = (string) $variationConst;
         $this->modificationConst = (string) $modificationConst;
@@ -66,6 +76,21 @@ final readonly class UpdateOneFourTochkiProductStockMessage
     public function getProduct(): ProductUid
     {
         return new ProductUid($this->product);
+    }
+
+    public function getOffer(): ProductOfferUid
+    {
+        return new ProductOfferUid($this->offerId);
+    }
+
+    public function getVariation(): ProductVariationUid
+    {
+        return new ProductVariationUid($this->variationId);
+    }
+
+    public function getModification(): ProductModificationUid
+    {
+        return new ProductModificationUid($this->modificationId);
     }
 
     public function getOfferConst(): ProductOfferConst
@@ -81,11 +106,6 @@ final readonly class UpdateOneFourTochkiProductStockMessage
     public function getModificationConst(): ProductModificationConst
     {
         return new ProductModificationConst($this->modificationConst);
-    }
-
-    public function getUser(): UserUid
-    {
-        return new UserUid($this->user);
     }
 
     public function getProfile(): UserProfileUid

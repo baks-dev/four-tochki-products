@@ -23,10 +23,10 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Schedule\FourTochkiStockRefresh;
+namespace BaksDev\FourTochki\Products\Schedule\FourTochkiProductsRefresh;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProductsStocks\UpdateFourTochkiProductsStocksMessage;
+use BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProducts\UpdateFourTochkiProductsMessage;
 use BaksDev\FourTochki\Repository\AllFourTochkiAuth\AllFourTochkiAuthInterface;
 use BaksDev\FourTochki\Repository\AllFourTochkiAuth\AllFourTochkiAuthResult;
 use Psr\Log\LoggerInterface;
@@ -34,7 +34,7 @@ use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(priority: 0)]
-final readonly class FourTochkiStockRefreshScheduleHandler
+final readonly class FourTochkiProductsRefreshScheduleHandler
 {
     public function __construct(
         #[Target('fourTochkiLogger')] private LoggerInterface $logger,
@@ -42,7 +42,7 @@ final readonly class FourTochkiStockRefreshScheduleHandler
         private AllFourTochkiAuthInterface $AllFourTochkiAuthRepository,
     ) {}
 
-    public function __invoke(FourTochkiStockRefreshScheduleMessage $message): void
+    public function __invoke(FourTochkiProductsRefreshScheduleMessage $message): void
     {
         /** Получаем все активные профили, у которых активная авторизация */
         $profiles = $this->AllFourTochkiAuthRepository
@@ -63,7 +63,7 @@ final readonly class FourTochkiStockRefreshScheduleHandler
         foreach($profiles as $profile)
         {
             $this->messageDispatch->dispatch(
-                message: new UpdateFourTochkiProductsStocksMessage($profile->getId()),
+                message: new UpdateFourTochkiProductsMessage($profile->getId()),
                 transport: (string) $profile->getId(),
             );
         }

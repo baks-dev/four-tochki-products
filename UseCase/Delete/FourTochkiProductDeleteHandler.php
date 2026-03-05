@@ -28,9 +28,7 @@ namespace BaksDev\FourTochki\Products\UseCase\Delete;
 use BaksDev\FourTochki\Products\Entity\FourTochkiProduct;
 use BaksDev\FourTochki\Products\Messenger\FourTochkiProductMessage;
 use BaksDev\Core\Entity\AbstractHandler;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-#[Autoconfigure(public: true)]
 final class FourTochkiProductDeleteHandler extends AbstractHandler
 {
     public function handle(FourTochkiProductDeleteDTO $command): FourTochkiProduct|string|null

@@ -125,8 +125,11 @@ final class FourTochkiProductNewTest extends KernelTestCase
             ->getValue()
         );
 
-        $fourTochkiProductDTO->getProfile()->setValue(new UserProfileUid(UserProfileUid::TEST));
-        self::assertTrue($fourTochkiProductDTO->getProfile()->getValue()->equals(UserProfileUid::TEST));
+
+        $profile = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
+
+        $fourTochkiProductDTO->getProfile()->setValue(new UserProfileUid($profile));
+        self::assertTrue($fourTochkiProductDTO->getProfile()->getValue()->equals($profile));
 
         $container = self::getContainer();
 

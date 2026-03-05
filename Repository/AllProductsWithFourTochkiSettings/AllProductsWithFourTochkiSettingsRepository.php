@@ -70,6 +70,8 @@ final class AllProductsWithFourTochkiSettingsRepository implements AllProductsWi
 
     private ?SearchDTO $search = null;
 
+    private ?UserProfileUid $profile = null;
+
     public function __construct(
         private readonly DBALQueryBuilder $DBALQueryBuilder,
         private readonly PaginatorInterface $paginator,
@@ -91,6 +93,12 @@ final class AllProductsWithFourTochkiSettingsRepository implements AllProductsWi
     public function filterFourTochkiProducts(FourTochkiProductsFilterDTO $fourTochkiProductsFilter): self
     {
         $this->fourTochkiProductsFilter = $fourTochkiProductsFilter;
+        return $this;
+    }
+
+    public function profile(UserProfileUid $profile): self
+    {
+        $this->profile = $profile;
         return $this;
     }
 
@@ -125,7 +133,7 @@ final class AllProductsWithFourTochkiSettingsRepository implements AllProductsWi
             )
             ->setParameter(
                 key: 'profile',
-                value: $this->UserProfileTokenStorage->getProfile(),
+                value: false === empty($this->profile) ? $this->profile : $this->UserProfileTokenStorage->getProfile(),
                 type: UserProfileUid::TYPE,
             );
 
@@ -418,10 +426,10 @@ final class AllProductsWithFourTochkiSettingsRepository implements AllProductsWi
                 FourTochkiProductProfile::class,
                 'four_tochki_product_profile',
                 '
-                    four_tochki_product_profile.main = four_tochki_product.id AND
-                    four_tochki_product_profile.value = four_tochki_auth_profile.value
-                ',
+                   four_tochki_product_profile.main = four_tochki_product.id AND
+                   four_tochki_product_profile.value = four_tochki_auth_profile.value'
             );
+
 
         /** Код продукта */
         $dbal
@@ -436,10 +444,10 @@ final class AllProductsWithFourTochkiSettingsRepository implements AllProductsWi
 
         /* Фильтр по товарам "С настройками" / "Без настроек" */
         if (true === $this->fourTochkiProductsFilter?->getExists()) {
-            $dbal->andWhere('four_tochki_product.id IS NOT NULL');
+            $dbal->andWhere('four_tochki_product_profile.value IS NOT NULL');
         }
         if (false === $this->fourTochkiProductsFilter?->getExists()) {
-            $dbal->andWhere('four_tochki_product.id IS NULL');
+            $dbal->andWhere('four_tochki_product_profile.value IS NULL');
         }
 
 

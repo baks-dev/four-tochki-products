@@ -23,10 +23,11 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProductsStocks;
+namespace BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProducts;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
+use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice\UpdateOneFourTochkiProductPriceMessage;
 use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\UpdateOneFourTochkiProductStockMessage;
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsInterface;
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsResult;
@@ -36,7 +37,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(priority: 0)]
-final readonly class UpdateFourTochkiProductsStocksDispatcher
+final readonly class UpdateFourTochkiProductsDispatcher
 {
     public function __construct(
         private LoggerInterface $Logger,
@@ -45,10 +46,10 @@ final readonly class UpdateFourTochkiProductsStocksDispatcher
         private UserByUserProfileInterface $UserByUserProfileRepository,
     ) {}
 
-    /** Находим все продукты данного профиля и бросаем сообщение на обновление их остатков */
-    public function __invoke(UpdateFourTochkiProductsStocksMessage $message): void
+    /** Находим все продукты данного профиля и бросаем сообщение на обновление их остатков и цены */
+    public function __invoke(UpdateFourTochkiProductsMessage $message): void
     {
-        /** Получаем пользователя, в которого авторизуемся  */
+        /** Получаем пользователя, в которого авторизуемся */
         $user = $this->UserByUserProfileRepository
             ->forProfile($message->getProfile())
             ->find();
@@ -85,20 +86,30 @@ final readonly class UpdateFourTochkiProductsStocksDispatcher
             }
 
 
-            /** Отправляем сообщение  */
+            /** Отправляем сообщение на обновление остатка */
             $this->MessageDispatch->dispatch(
                 new UpdateOneFourTochkiProductStockMessage(
                     $allProductsWithFourTochkiSettingsResult->getId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductOfferId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductVariationId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductModificationId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductOfferValue(),
-                    $allProductsWithFourTochkiSettingsResult->getProductVariationValue(),
-                    $allProductsWithFourTochkiSettingsResult->getProductModificationValue(),
                     $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
                     $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
                     $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
                     $user->getId(),
+                    $message->getProfile(),
+                ),
+                transport: (string) $message->getProfile(),
+            );
+
+
+            /** Отправляем сообщение на обновление цены */
+            $this->MessageDispatch->dispatch(
+                new UpdateOneFourTochkiProductPriceMessage(
+                    $allProductsWithFourTochkiSettingsResult->getId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductOfferId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductVariationId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductModificationId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
+                    $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
+                    $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
                     $message->getProfile(),
                 ),
                 transport: (string) $message->getProfile(),

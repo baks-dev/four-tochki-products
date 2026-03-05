@@ -23,11 +23,18 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProductsStocks\Tests;
+namespace BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice\Tests;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProductsStocks\UpdateFourTochkiProductsStocksMessage;
+use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice\UpdateOneFourTochkiProductPriceMessage;
 use BaksDev\FourTochki\UseCase\Admin\NewEdit\Tests\FourTochkiAuthNewTest;
+use BaksDev\Products\Product\Type\Id\ProductUid;
+use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
+use BaksDev\Products\Product\Type\Offers\Id\ProductOfferUid;
+use BaksDev\Products\Product\Type\Offers\Variation\ConstId\ProductVariationConst;
+use BaksDev\Products\Product\Type\Offers\Variation\Id\ProductVariationUid;
+use BaksDev\Products\Product\Type\Offers\Variation\Modification\ConstId\ProductModificationConst;
+use BaksDev\Products\Product\Type\Offers\Variation\Modification\Id\ProductModificationUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use PHPUnit\Framework\Attributes\DependsOnClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -37,17 +44,25 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 #[Group('four-tochki')]
 #[Group('four-tochki-dispatcher')]
-final class UpdateFourTochkiProductsStocksDispatcherTest extends KernelTestCase
+final class UpdateOneFourTochkiProductPriceDispatcherTest extends KernelTestCase
 {
     #[DependsOnClass(FourTochkiAuthNewTest::class)]
     public function testUpdate(): void
     {
-        $MessageDispatch = self::getContainer()->get(MessageDispatchInterface::class);
-
         $profile = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
 
-        $updateFourTochkiProductsStocksMessage = new UpdateFourTochkiProductsStocksMessage(new UserProfileUid($profile));
-        $MessageDispatch->dispatch($updateFourTochkiProductsStocksMessage);
+        $MessageDispatch = self::getContainer()->get(MessageDispatchInterface::class);
+
+        $MessageDispatch->dispatch(new UpdateOneFourTochkiProductPriceMessage(
+            new ProductUid(),
+            new ProductOfferUid(),
+            new ProductVariationUid(),
+            new ProductModificationUid(),
+            new ProductOfferConst(),
+            new ProductVariationConst(),
+            new ProductModificationConst(),
+            new UserProfileUid($profile),
+        ));
 
         self::assertTrue(true);
     }
