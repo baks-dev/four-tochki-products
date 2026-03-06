@@ -27,14 +27,11 @@ namespace BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\UpdateOneFourTochkiProductStockMessage;
-use BaksDev\FourTochki\UseCase\Admin\NewEdit\Tests\FourTochkiAuthNewTest;
+use BaksDev\FourTochki\Products\UseCase\NewEdit\Tests\FourTochkiProductNewTest;
 use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
-use BaksDev\Products\Product\Type\Offers\Id\ProductOfferUid;
 use BaksDev\Products\Product\Type\Offers\Variation\ConstId\ProductVariationConst;
-use BaksDev\Products\Product\Type\Offers\Variation\Id\ProductVariationUid;
 use BaksDev\Products\Product\Type\Offers\Variation\Modification\ConstId\ProductModificationConst;
-use BaksDev\Products\Product\Type\Offers\Variation\Modification\Id\ProductModificationUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\User\Type\Id\UserUid;
 use PHPUnit\Framework\Attributes\DependsOnClass;
@@ -43,11 +40,11 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 #[When(env: 'test')]
-#[Group('four-tochki')]
-#[Group('four-tochki-dispatcher')]
+#[Group('four-tochki-products')]
+#[Group('four-tochki-products-dispatcher')]
 final class UpdateOneFourTochkiProductStockDispatcherTest extends KernelTestCase
 {
-    #[DependsOnClass(FourTochkiAuthNewTest::class)]
+    #[DependsOnClass(FourTochkiProductNewTest::class)]
     public function testUpdate(): void
     {
         $profile = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
@@ -56,12 +53,6 @@ final class UpdateOneFourTochkiProductStockDispatcherTest extends KernelTestCase
 
         $MessageDispatch->dispatch(new UpdateOneFourTochkiProductStockMessage(
             new ProductUid(),
-            new ProductOfferUid(),
-            new ProductVariationUid(),
-            new ProductModificationUid(),
-            '18',
-            '225',
-            '40',
             new ProductOfferConst(),
             new ProductVariationConst(),
             new ProductModificationConst(),

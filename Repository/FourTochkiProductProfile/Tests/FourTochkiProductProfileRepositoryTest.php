@@ -23,9 +23,11 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile;
+namespace BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\Tests;
 
 use BaksDev\FourTochki\Products\Entity\FourTochkiProduct;
+use BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\FourTochkiProductProfileInterface;
+use BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\FourTochkiProductProfileRepository;
 use BaksDev\FourTochki\Products\UseCase\NewEdit\Tests\FourTochkiProductNewTest;
 use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
@@ -48,8 +50,10 @@ final class FourTochkiProductProfileRepositoryTest extends KernelTestCase
         /** @var FourTochkiProductProfileRepository $FourTochkiProductProfileRepository */
         $FourTochkiProductProfileRepository = self::getContainer()->get(FourTochkiProductProfileInterface::class);
 
+        $profile = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
+
         $result = $FourTochkiProductProfileRepository
-            ->forProfile(new UserProfileUid(UserProfileUid::TEST))
+            ->forProfile(new UserProfileUid($profile))
             ->product(new ProductUid(ProductUid::TEST))
             ->offerConst(new ProductOfferConst(ProductOfferConst::TEST))
             ->variationConst(new ProductVariationConst(ProductVariationConst::TEST))

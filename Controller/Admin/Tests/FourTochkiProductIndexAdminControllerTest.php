@@ -33,7 +33,6 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 #[Group('four-tochki-products')]
 #[Group('four-tochki-products-controller')]
-#[Group('four-tochki-products-repository')]
 #[Group('four-tochki-products-usecase')]
 final class FourTochkiProductIndexAdminControllerTest extends WebTestCase
 {

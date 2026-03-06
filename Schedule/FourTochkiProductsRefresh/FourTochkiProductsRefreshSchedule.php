@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\Schedule\FourTochkiStockRefresh;
+namespace BaksDev\FourTochki\Products\Schedule\FourTochkiProductsRefresh;
 
 use BaksDev\Core\Schedule\ScheduleInterface;
 use DateInterval;
@@ -33,12 +33,12 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  * Обновляем остатки на складе в соответствии с остатками на складах 4tochki
  */
 #[AutoconfigureTag('baks.schedule')]
-final class FourTochkiStockRefreshSchedule implements ScheduleInterface
+final class FourTochkiProductsRefreshSchedule implements ScheduleInterface
 {
     /** Возвращает класс сообщение */
     public function getMessage(): object
     {
-        return new FourTochkiStockRefreshScheduleMessage();
+        return new FourTochkiProductsRefreshScheduleMessage();
     }
 
     /**

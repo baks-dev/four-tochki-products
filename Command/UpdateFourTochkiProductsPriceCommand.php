@@ -27,7 +27,7 @@ namespace BaksDev\FourTochki\Products\Command;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
-use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\UpdateOneFourTochkiProductStockMessage;
+use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice\UpdateOneFourTochkiProductPriceMessage;
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsInterface;
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsResult;
 use BaksDev\FourTochki\Repository\AllProfileAuth\AllProfileFourTochkiAuthInterface;
@@ -43,10 +43,10 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Получаем карточки товаров и обновляем складской остаток
+ * Получаем карточки товаров и обновляем цены в карточках
  */
-#[AsCommand(name: 'four-tochki:update:stocks', description: 'Обновляет складской остаток товаров с 4tochki')]
-class UpdateFourTochkiProductsStocksCommand extends Command
+#[AsCommand(name: 'four-tochki:update:price', description: 'Обновляет цену товаров с 4tochki')]
+class UpdateFourTochkiProductsPriceCommand extends Command
 {
     private SymfonyStyle $io;
 
@@ -159,7 +159,7 @@ class UpdateFourTochkiProductsStocksCommand extends Command
         {
             $this->update($userProfileUid, $input->getOption('article'));
 
-            $this->io->success('Остатки успешно обновлены');
+            $this->io->success('Цены успешно обновлены');
             return Command::SUCCESS;
         }
 
@@ -225,13 +225,16 @@ class UpdateFourTochkiProductsStocksCommand extends Command
 
             /** Отправляем сообщение0  */
             $this->MessageDispatch->dispatch(
-                new UpdateOneFourTochkiProductStockMessage(
+                new UpdateOneFourTochkiProductPriceMessage(
                     $allProductsWithFourTochkiSettingsResult->getId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductOfferId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductVariationId(),
+                    $allProductsWithFourTochkiSettingsResult->getProductModificationId(),
+
                     $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
                     $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
                     $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
 
-                    $user->getId(),
                     $userProfileUid,
                 ),
                 transport: $async === true ? $userProfileUid.'-low' : null,

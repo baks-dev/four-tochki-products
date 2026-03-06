@@ -29,6 +29,7 @@ use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\All
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsRepository;
 use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsResult;
 use BaksDev\FourTochki\Products\UseCase\NewEdit\Tests\FourTochkiProductNewTest;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use PHPUnit\Framework\Attributes\DependsOnClass;
 use PHPUnit\Framework\Attributes\Group;
 use ReflectionClass;
@@ -48,7 +49,11 @@ final class AllProductsWithFourTochkiSettingsRepositoryTest extends KernelTestCa
         $AllProductsWithFourTochkiSettingsRepository = self::getContainer()
             ->get(AllProductsWithFourTochkiSettingsInterface::class);
 
-        $results = $AllProductsWithFourTochkiSettingsRepository->findPaginator();
+        $profile = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
+
+        $results = $AllProductsWithFourTochkiSettingsRepository
+            ->profile(new UserProfileUid($profile))
+            ->findPaginator();
 
         /** @var AllProductsWithFourTochkiSettingsResult $allProductsWithFourTochkiSettingsResult */
         foreach($results->getData() as $allProductsWithFourTochkiSettingsResult)

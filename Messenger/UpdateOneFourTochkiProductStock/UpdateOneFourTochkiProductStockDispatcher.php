@@ -25,13 +25,10 @@ declare(strict_types=1);
 
 namespace BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock;
 
-use BaksDev\Core\Messenger\MessageDispatchInterface;
 use BaksDev\FourTochki\Api\GetFindTyre\FourTochkiGetFindTyreRequest;
 use BaksDev\FourTochki\Api\GetFindTyre\FourTochkiGetFindTyreResult;
 use BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\FourTochkiProductProfileInterface;
 use BaksDev\FourTochki\Products\UseCase\NewEdit\FourTochkiProductDTO;
-use BaksDev\Products\Product\Messenger\Price\UpdateProductPriceMessage;
-use BaksDev\Products\Product\Repository\CurrentProductEvent\CurrentProductEventInterface;
 use BaksDev\Products\Stocks\Entity\Total\ProductStockTotal;
 use BaksDev\Products\Stocks\Repository\ProductStocksTotalStorage\ProductStocksTotalStorageInterface;
 use BaksDev\Products\Stocks\UseCase\Admin\EditTotal\ProductStockTotalEditDTO;
@@ -51,8 +48,6 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
         private ProductStocksTotalStorageInterface $ProductStocksTotalStorageRepository,
         private EntityManagerInterface $EntityManager,
         private FourTochkiProductProfileInterface $FourTochkiProductProfileRepository,
-        private CurrentProductEventInterface $CurrentProductEventRepository,
-        private MessageDispatchInterface $MessageDispatch,
     ) {}
 
     /**
@@ -82,28 +77,26 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
         $fourTochkiProductDTO = new FourTochkiProductDTO();
         $fourTochkiProduct->getDto($fourTochkiProductDTO);
 
-        $code = $fourTochkiProductDTO
-            ->getCode()
-            ->getValue();
-
-        $fourTochkiGetFindTyreResult = $this->FourTochkiGetFindTyreRequest
-            ->profile($message->getProfile())
-            ->findTyre($code);
-
-        if(false === ($fourTochkiGetFindTyreResult instanceof FourTochkiGetFindTyreResult))
-        {
-            $this->Logger->warning(
-                sprintf('Модель с артикулом %s не была найдена на складах 4tochki', $code),
-                [var_export($message, true), self::class.':'.__LINE__],
-            );
-            return;
-        }
-
 
         /** Если выбрана настройка изменения остатков на складе */
         if(true === $fourTochkiProductDTO->getRefresh()->getValue())
         {
-            $productStockTotalEditDTO = new ProductStockTotalEditDTO();
+            $code = $fourTochkiProductDTO
+                ->getCode()
+                ->getValue();
+
+            $fourTochkiGetFindTyreResult = $this->FourTochkiGetFindTyreRequest
+                ->profile($message->getProfile())
+                ->findTyre($code);
+
+            if(false === ($fourTochkiGetFindTyreResult instanceof FourTochkiGetFindTyreResult))
+            {
+                $this->Logger->warning(
+                    sprintf('Модель с артикулом %s не была найдена на складах 4tochki', $code),
+                    [var_export($message, true), self::class.':'.__LINE__],
+                );
+                return;
+            }
 
 
             /** Получаем текущий складской остаток для данных продукта и профиля, если таковой имеется */
@@ -113,6 +106,7 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
                 ->variation($message->getVariationConst())
                 ->modification($message->getModificationConst())
                 ->profile($message->getProfile())
+                ->storage('4tochki')
                 ->find();
 
 
@@ -141,6 +135,8 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
                 );
             }
 
+
+            $productStockTotalEditDTO = new ProductStockTotalEditDTO();
             $productStocksTotal->getDto($productStockTotalEditDTO);
 
             $productStockTotalEditDTO
@@ -160,37 +156,6 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
 
                 return;
             }
-
-            $this->Logger->info(
-                'Остаток продукции на складе успешно обновлен',
-                [var_export($message, true), self::class.':'.__LINE__],
-            );
-        }
-
-
-        /** Если выбрана настройка обновления цены в карточке */
-        if(true === $fourTochkiProductDTO->getPrice()->getValue())
-        {
-            $updateProductPriceMessage = new UpdateProductPriceMessage();
-
-
-            /** Находим текущее событие продукта */
-            $productEvent = $this->CurrentProductEventRepository->findByProduct($message->getProduct());
-
-
-            /** Получаем цену с учетом торговой наценки */
-            $price = $fourTochkiGetFindTyreResult->getPriceWithPercent();
-
-            $updateProductPriceMessage
-                ->setEvent($productEvent->getId())
-                ->setOffer($message->getOffer())
-                ->setVariation($message->getVariation())
-                ->setModification($message->getModification())
-                ->setPrice($price);
-
-
-            /** Обновляем остаток на складе */
-            $this->MessageDispatch->dispatch($updateProductPriceMessage, [], 'products-product');
 
             $this->Logger->info(
                 'Остаток продукции на складе успешно обновлен',

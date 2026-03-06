@@ -29,14 +29,15 @@ use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Services\Paginator\PaginatorInterface;
 use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
 use BaksDev\Products\Product\Forms\ProductFilter\Admin\ProductFilterDTO;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 
-#[Autoconfigure(public: true)]
 interface AllProductsWithFourTochkiSettingsInterface
 {
     public function search(SearchDTO $search): self;
 
     public function filter(ProductFilterDTO $filter): self;
+
+    public function profile(UserProfileUid $profile): self;
 
     public function filterFourTochkiProducts(FourTochkiProductsFilterDTO $fourTochkiProductsFilter): self;
 

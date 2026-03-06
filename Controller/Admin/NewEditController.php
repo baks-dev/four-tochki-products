@@ -111,7 +111,7 @@ final class NewEditController extends AbstractController
         );
 
         $form->handleRequest($request);
-//dd($form->isSubmitted(), $form->isValid(), $form->getErrors());
+
         if($form->isSubmitted() && $form->isValid() && $form->has('four_tochki_product_newedit'))
         {
             $this->refreshTokenForm($form);
