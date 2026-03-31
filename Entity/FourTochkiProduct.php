@@ -102,6 +102,12 @@ class FourTochkiProduct extends EntityState
         return $this->id;
     }
 
+    public function getCode(): string
+    {
+        return $this->code->getValue();
+    }
+
+
     /** Гидрирует переданную DTO, вызывая ее сеттеры */
     public function getDto($dto): mixed
     {

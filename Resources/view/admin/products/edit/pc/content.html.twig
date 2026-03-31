@@ -13,7 +13,7 @@
             {# Заголовок модального окна #}
             {{ include('@four-tochki-products/admin/products/edit/pc/header.html.twig') }}
 
-            <div class="modal-body justify-content-between gap-5 d-flex">
+            <div class="modal-body justify-content-between gap-5 d-flex align-items-center">
 
                 <div class="w-25">
                     {{ form_row(form.code, { label: 'Код продукта' }) }}
@@ -21,7 +21,11 @@
 
                 <div class="w-75 h6 mt-3">
                     {{ form_row(form.refresh.value, { label: 'Обновлять количество товара на складе' }) }}
-                    {{ form_row(form.price.value, { label: 'Обновлять цену товара' }) }}
+
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FOUR_TOCHKI_CARD_UPDATE') %}
+                        {{ form_row(form.price.value, { label: 'Обновлять цену товара' }) }}
+                    {% endif %}
+
                 </div>
 
             </div>

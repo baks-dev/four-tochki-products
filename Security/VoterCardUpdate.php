@@ -23,24 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\UseCase\NewEdit\Price;
+namespace BaksDev\FourTochki\Products\Security;
 
-use BaksDev\FourTochki\Products\Entity\Price\FourTochkiProductPriceInterface;
+use BaksDev\Users\Profile\Group\Security\RoleInterface;
+use BaksDev\Users\Profile\Group\Security\VoterInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-/** @see FourTochkiProductPrice */
-final class FourTochkiProductPriceDTO implements FourTochkiProductPriceInterface
+#[AutoconfigureTag('baks.security.voter')]
+final class VoterCardUpdate implements VoterInterface
 {
-    /** Значение свойства */
-    private bool $value = false;
+    public const string VOTER = 'CARD_UPDATE';
 
-    public function getValue(): bool
+    /** Метод возвращает правило, конкатенируя ROLE + VOTER */
+    public static function getVoter(): string
     {
-        return true === $this->value;
+        return Role::ROLE.'_'.self::VOTER;
     }
 
-    public function setValue(bool $value): self
+    public function equals(RoleInterface $role): bool
     {
-        $this->value = $value;
-        return $this;
+        return $role->getRole() === Role::ROLE;
     }
 }
