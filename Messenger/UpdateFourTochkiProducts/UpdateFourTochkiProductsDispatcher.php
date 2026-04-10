@@ -65,7 +65,9 @@ final readonly class UpdateFourTochkiProductsDispatcher
 
 
         /** Получаем все продукты для данного профиля */
-        $result = $this->AllFourTochkiProductsRepository->findAll();
+        $result = $this->AllFourTochkiProductsRepository
+            ->profile($message->getProfile())
+            ->findAll();
 
 
         /** @var AllFourTochkiProductsResult $AllFourTochkiProductsResult */
