@@ -29,12 +29,21 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 final class FourTochkiProductPriceForm extends AbstractType
 {
+    public function __construct(private readonly AuthorizationCheckerInterface $AuthorizationChecker) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('value', CheckboxType::class, ['required' => false, 'label' => false]);
+        if(
+            $this->AuthorizationChecker->isGranted('ROLE_ADMIN') ||
+            $this->AuthorizationChecker->isGranted('ROLE_FOUR_TOCHKI_CARD_UPDATE')
+        )
+        {
+            $builder->add('value', CheckboxType::class, ['required' => false, 'label' => false]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

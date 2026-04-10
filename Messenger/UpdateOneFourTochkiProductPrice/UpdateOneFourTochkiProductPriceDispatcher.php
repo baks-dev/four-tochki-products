@@ -31,7 +31,6 @@ use BaksDev\FourTochki\Api\GetFindTyre\FourTochkiGetFindTyreResult;
 use BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\FourTochkiProductProfileInterface;
 use BaksDev\FourTochki\Products\UseCase\NewEdit\FourTochkiProductDTO;
 use BaksDev\Products\Product\Messenger\Price\UpdateProductPriceMessage;
-use BaksDev\Products\Product\Repository\CurrentProductEvent\CurrentProductEventInterface;
 use BaksDev\Products\Product\Repository\CurrentProductIdentifier\CurrentProductIdentifierByConstInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Target;

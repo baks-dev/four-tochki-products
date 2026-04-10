@@ -23,24 +23,18 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\FourTochki\Products\UseCase\NewEdit\Price;
+namespace BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts;
 
-use BaksDev\FourTochki\Products\Entity\Price\FourTochkiProductPriceInterface;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use Generator;
 
-/** @see FourTochkiProductPrice */
-final class FourTochkiProductPriceDTO implements FourTochkiProductPriceInterface
+interface AllFourTochkiProductsInterface
 {
-    /** Значение свойства */
-    private bool $value = false;
+    public function profile(UserProfileUid $profile): self;
 
-    public function getValue(): bool
-    {
-        return true === $this->value;
-    }
-
-    public function setValue(bool $value): self
-    {
-        $this->value = $value;
-        return $this;
-    }
+    /**
+     * Получаем все продукты с настройкой для Форточек
+     * @return Generator<AllFourTochkiProductsResult>
+     */
+    public function findAll(): Generator;
 }

@@ -20,3 +20,7 @@ ROLE_FOUR_TOCHKI_PRODUCTS_EDIT:
 ROLE_FOUR_TOCHKI_PRODUCTS_DELETE:
   name: 'Удалить'
   desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_CARD_UPDATE:
+  name: 'Обновлять цену в карточках (согласно цене 4tochki)'
+  desc: ''

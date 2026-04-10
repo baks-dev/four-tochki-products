@@ -20,3 +20,7 @@ ROLE_FOUR_TOCHKI_PRODUCTS_EDIT:
 ROLE_FOUR_TOCHKI_PRODUCTS_DELETE:
   name: 'Delete'
   desc: ''
+
+ROLE_FOUR_TOCHKI_PRODUCTS_CARD_UPDATE:
+  name: 'Update card price (according to 4tochki price)'
+  desc: ''
