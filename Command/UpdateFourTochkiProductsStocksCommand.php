@@ -26,10 +26,9 @@ declare(strict_types=1);
 namespace BaksDev\FourTochki\Products\Command;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
 use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\UpdateOneFourTochkiProductStockMessage;
-use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsInterface;
-use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsResult;
+use BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts\AllFourTochkiProductsInterface;
+use BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts\AllFourTochkiProductsResult;
 use BaksDev\FourTochki\Repository\AllProfileAuth\AllProfileFourTochkiAuthInterface;
 use BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile\UserByUserProfileInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -53,7 +52,7 @@ class UpdateFourTochkiProductsStocksCommand extends Command
     public function __construct(
         private readonly AllProfileFourTochkiAuthInterface $AllProfileFourTochkiAuthRepository,
         private readonly UserByUserProfileInterface $UserByUserProfileRepository,
-        private readonly AllProductsWithFourTochkiSettingsInterface $AllProductsWithFourTochkiSettingsRepository,
+        private readonly AllFourTochkiProductsInterface $AllFourTochkiProductsRepository,
         private readonly MessageDispatchInterface $MessageDispatch,
     )
     {
@@ -186,20 +185,19 @@ class UpdateFourTochkiProductsStocksCommand extends Command
 
 
         /** Получаем все продукты для данного профиля */
-        $result = $this->AllProductsWithFourTochkiSettingsRepository
+        $result = $this->AllFourTochkiProductsRepository
             ->profile($userProfileUid)
-            ->filterFourTochkiProducts(new FourTochkiProductsFilterDTO()->setExists(true))
-            ->findPaginator()
-            ->getData();
+            ->findAll();
 
-        /** @var AllProductsWithFourTochkiSettingsResult $allProductsWithFourTochkiSettingsResult */
-        foreach($result as $allProductsWithFourTochkiSettingsResult)
+
+        /** @var AllFourTochkiProductsResult $AllFourTochkiProductsResult */
+        foreach($result as $AllFourTochkiProductsResult)
         {
             /** Пропускаем продукты без модификации */
             if(
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductOfferValue()) ||
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductVariationValue()) ||
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductModificationValue())
+                true === empty($AllFourTochkiProductsResult->getProductOfferConst()) ||
+                true === empty($AllFourTochkiProductsResult->getProductVariationConst()) ||
+                true === empty($AllFourTochkiProductsResult->getProductModificationConst())
             )
             {
                 continue;
@@ -207,12 +205,12 @@ class UpdateFourTochkiProductsStocksCommand extends Command
 
             if(
                 !empty($article) &&
-                stripos($allProductsWithFourTochkiSettingsResult->getProductArticle(), $article) === false
+                stripos($AllFourTochkiProductsResult->getProductArticle(), $article) === false
             )
             {
                 $this->io->writeln(sprintf(
                     '<fg=gray>... %s</>',
-                    $allProductsWithFourTochkiSettingsResult->getProductArticle(),
+                    $AllFourTochkiProductsResult->getProductArticle(),
                 ));
 
                 continue;
@@ -220,16 +218,17 @@ class UpdateFourTochkiProductsStocksCommand extends Command
 
             $this->io->note(sprintf(
                 'Обновляем артикул %s',
-                $allProductsWithFourTochkiSettingsResult->getProductArticle(),
+                $AllFourTochkiProductsResult->getProductArticle(),
             ));
+
 
             /** Отправляем сообщение0  */
             $this->MessageDispatch->dispatch(
                 new UpdateOneFourTochkiProductStockMessage(
-                    $allProductsWithFourTochkiSettingsResult->getId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
+                    $AllFourTochkiProductsResult->getId(),
+                    $AllFourTochkiProductsResult->getProductOfferConst(),
+                    $AllFourTochkiProductsResult->getProductVariationConst(),
+                    $AllFourTochkiProductsResult->getProductModificationConst(),
 
                     $user->getId(),
                     $userProfileUid,
@@ -237,7 +236,7 @@ class UpdateFourTochkiProductsStocksCommand extends Command
                 transport: $async === true ? $userProfileUid.'-low' : null,
             );
 
-            if($allProductsWithFourTochkiSettingsResult->getProductArticle() === $article)
+            if($AllFourTochkiProductsResult->getProductArticle() === $article)
             {
                 break;
             }

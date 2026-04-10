@@ -26,11 +26,10 @@ declare(strict_types=1);
 namespace BaksDev\FourTochki\Products\Messenger\UpdateFourTochkiProducts;
 
 use BaksDev\Core\Messenger\MessageDispatchInterface;
-use BaksDev\FourTochki\Products\Forms\FourTochkiFilter\FourTochkiProductsFilterDTO;
 use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductPrice\UpdateOneFourTochkiProductPriceMessage;
 use BaksDev\FourTochki\Products\Messenger\UpdateOneFourTochkiProductStock\UpdateOneFourTochkiProductStockMessage;
-use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsInterface;
-use BaksDev\FourTochki\Products\Repository\AllProductsWithFourTochkiSettings\AllProductsWithFourTochkiSettingsResult;
+use BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts\AllFourTochkiProductsInterface;
+use BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts\AllFourTochkiProductsResult;
 use BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile\UserByUserProfileInterface;
 use BaksDev\Users\User\Entity\User;
 use Psr\Log\LoggerInterface;
@@ -41,7 +40,7 @@ final readonly class UpdateFourTochkiProductsDispatcher
 {
     public function __construct(
         private LoggerInterface $Logger,
-        private AllProductsWithFourTochkiSettingsInterface $AllProductsWithFourTochkiSettingsRepository,
+        private AllFourTochkiProductsInterface $AllFourTochkiProductsRepository,
         private MessageDispatchInterface $MessageDispatch,
         private UserByUserProfileInterface $UserByUserProfileRepository,
     ) {}
@@ -66,20 +65,17 @@ final readonly class UpdateFourTochkiProductsDispatcher
 
 
         /** Получаем все продукты для данного профиля */
-        $result = $this->AllProductsWithFourTochkiSettingsRepository
-            ->filterFourTochkiProducts(new FourTochkiProductsFilterDTO()->setExists(true))
-            ->findPaginator()
-            ->getData();
+        $result = $this->AllFourTochkiProductsRepository->findAll();
 
 
-        /** @var  AllProductsWithFourTochkiSettingsResult $allProductsWithFourTochkiSettingsResult */
-        foreach($result as $allProductsWithFourTochkiSettingsResult)
+        /** @var AllFourTochkiProductsResult $AllFourTochkiProductsResult */
+        foreach($result as $AllFourTochkiProductsResult)
         {
             /** Пропускаем продукты без модификации */
             if(
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductOfferValue()) ||
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductVariationValue()) ||
-                true === empty($allProductsWithFourTochkiSettingsResult->getProductModificationValue())
+                true === empty($AllFourTochkiProductsResult->getProductOfferConst()) ||
+                true === empty($AllFourTochkiProductsResult->getProductVariationConst()) ||
+                true === empty($AllFourTochkiProductsResult->getProductModificationConst())
             )
             {
                 continue;
@@ -89,10 +85,10 @@ final readonly class UpdateFourTochkiProductsDispatcher
             /** Отправляем сообщение на обновление остатка */
             $this->MessageDispatch->dispatch(
                 new UpdateOneFourTochkiProductStockMessage(
-                    $allProductsWithFourTochkiSettingsResult->getId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
+                    $AllFourTochkiProductsResult->getId(),
+                    $AllFourTochkiProductsResult->getProductOfferConst(),
+                    $AllFourTochkiProductsResult->getProductVariationConst(),
+                    $AllFourTochkiProductsResult->getProductModificationConst(),
                     $user->getId(),
                     $message->getProfile(),
                 ),
@@ -103,10 +99,10 @@ final readonly class UpdateFourTochkiProductsDispatcher
             /** Отправляем сообщение на обновление цены */
             $this->MessageDispatch->dispatch(
                 new UpdateOneFourTochkiProductPriceMessage(
-                    $allProductsWithFourTochkiSettingsResult->getId(),
-                    $allProductsWithFourTochkiSettingsResult->getProductOfferConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductVariationConst(),
-                    $allProductsWithFourTochkiSettingsResult->getProductModificationConst(),
+                    $AllFourTochkiProductsResult->getId(),
+                    $AllFourTochkiProductsResult->getProductOfferConst(),
+                    $AllFourTochkiProductsResult->getProductVariationConst(),
+                    $AllFourTochkiProductsResult->getProductModificationConst(),
 
                     $message->getProfile(),
                 ),
