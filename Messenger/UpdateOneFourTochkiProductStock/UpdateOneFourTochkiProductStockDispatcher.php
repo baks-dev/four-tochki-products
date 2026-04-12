@@ -35,14 +35,16 @@ use BaksDev\Products\Stocks\UseCase\Admin\EditTotal\ProductStockTotalEditDTO;
 use BaksDev\Products\Stocks\UseCase\Admin\EditTotal\ProductStockTotalEditHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[Autoconfigure(shared: false)]
 #[AsMessageHandler(priority: 0)]
 final readonly class UpdateOneFourTochkiProductStockDispatcher
 {
     public function __construct(
-        #[Target('fourTochkiLogger')] private LoggerInterface $Logger,
+        #[Target('fourTochkiProductsLogger')] private LoggerInterface $Logger,
         private FourTochkiGetFindTyreRequest $FourTochkiGetFindTyreRequest,
         private ProductStockTotalEditHandler $ProductStockTotalEditHandler,
         private ProductStocksTotalStorageInterface $ProductStocksTotalStorageRepository,
@@ -165,7 +167,7 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
         }
 
         $this->Logger->info(
-            'Остаток продукции на складе успешно обновлен',
+            sprintf('Остаток продукции на складе успешно обновлен => %s', $fourTochkiGetFindTyreResult->getQuantity()),
             [var_export($message, true), self::class.':'.__LINE__],
         );
 

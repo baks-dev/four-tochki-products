@@ -33,13 +33,16 @@ use BaksDev\FourTochki\Products\Repository\AllFourTochkiProducts\AllFourTochkiPr
 use BaksDev\Users\Profile\UserProfile\Repository\UserByUserProfile\UserByUserProfileInterface;
 use BaksDev\Users\User\Entity\User;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[Autoconfigure(shared: false)]
 #[AsMessageHandler(priority: 0)]
 final readonly class UpdateFourTochkiProductsDispatcher
 {
     public function __construct(
-        private LoggerInterface $Logger,
+        #[Target('fourTochkiProductsLogger')] private LoggerInterface $Logger,
         private AllFourTochkiProductsInterface $AllFourTochkiProductsRepository,
         private MessageDispatchInterface $MessageDispatch,
         private UserByUserProfileInterface $UserByUserProfileRepository,

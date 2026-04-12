@@ -32,15 +32,18 @@ use BaksDev\FourTochki\Products\Repository\FourTochkiProductProfile\FourTochkiPr
 use BaksDev\FourTochki\Products\UseCase\NewEdit\FourTochkiProductDTO;
 use BaksDev\Products\Product\Messenger\Price\UpdateProductPriceMessage;
 use BaksDev\Products\Product\Repository\CurrentProductIdentifier\CurrentProductIdentifierByConstInterface;
+use BaksDev\Reference\Money\Type\Money;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+#[Autoconfigure(shared: false)]
 #[AsMessageHandler(priority: 0)]
 final readonly class UpdateOneFourTochkiProductPriceDispatcher
 {
     public function __construct(
-        #[Target('fourTochkiLogger')] private LoggerInterface $Logger,
+        #[Target('fourTochkiProductsLogger')] private LoggerInterface $Logger,
         private FourTochkiGetFindTyreRequest $FourTochkiGetFindTyreRequest,
         private FourTochkiProductProfileInterface $FourTochkiProductProfileRepository,
         private CurrentProductIdentifierByConstInterface $CurrentProductIdentifierByConstRepository,
@@ -113,7 +116,7 @@ final readonly class UpdateOneFourTochkiProductPriceDispatcher
             ->setOffer($CurrentProductIdentifierResult->getOffer())
             ->setVariation($CurrentProductIdentifierResult->getVariation())
             ->setModification($CurrentProductIdentifierResult->getModification())
-            ->setPrice($price);
+            ->setPrice(new Money($price->getRoundValue(10)));
 
         /** Обновляем цену в карточке */
         $this->MessageDispatch->dispatch(
@@ -122,7 +125,7 @@ final readonly class UpdateOneFourTochkiProductPriceDispatcher
         );
 
         $this->Logger->info(
-            'Цена продукции в карточке успешно обновлена',
+            sprintf('Цена продукции в карточке успешно обновлена => %s', $price->getRoundValue()),
             [var_export($message, true), self::class.':'.__LINE__],
         );
     }
