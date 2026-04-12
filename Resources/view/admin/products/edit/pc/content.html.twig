@@ -22,7 +22,7 @@
                 <div class="w-75 h6 mt-3">
                     {{ form_row(form.refresh.value, { label: 'Обновлять количество товара на складе' }) }}
 
-                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FOUR_TOCHKI_CARD_UPDATE') %}
+                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_FOUR_TOCHKI_PRODUCTS_CARD_UPDATE') %}
                         {{ form_row(form.price.value, { label: 'Обновлять цену товара' }) }}
                     {% endif %}
 

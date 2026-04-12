@@ -39,7 +39,7 @@ final class FourTochkiProductPriceForm extends AbstractType
     {
         if(
             $this->AuthorizationChecker->isGranted('ROLE_ADMIN') ||
-            $this->AuthorizationChecker->isGranted('ROLE_FOUR_TOCHKI_CARD_UPDATE')
+            $this->AuthorizationChecker->isGranted('ROLE_FOUR_TOCHKI_PRODUCTS_CARD_UPDATE')
         )
         {
             $builder->add('value', CheckboxType::class, ['required' => false, 'label' => false]);

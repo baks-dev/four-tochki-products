@@ -150,7 +150,9 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
 
         $productStockTotalEditDTO
             ->setTotal($fourTochkiGetFindTyreResult->getQuantity())
-            ->setStorage('4tochki');
+            ->setStorage('4tochki')
+            ->setRecalculate(true) // указываем пересчет в карточке товара для обновления маркетплейсов
+        ;
 
 
         /** Обновляем остаток на складе */
