@@ -67,21 +67,6 @@ final readonly class UpdateOneFourTochkiProductPriceMessage
         return new ProductUid($this->product);
     }
 
-    public function getOffer(): ProductOfferUid
-    {
-        return new ProductOfferUid($this->offerId);
-    }
-
-    public function getVariation(): ProductVariationUid
-    {
-        return new ProductVariationUid($this->variationId);
-    }
-
-    public function getModification(): ProductModificationUid
-    {
-        return new ProductModificationUid($this->modificationId);
-    }
-
     public function getOfferConst(): ProductOfferConst
     {
         return new ProductOfferConst($this->offerConst);
