@@ -119,6 +119,16 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
             ->find();
 
 
+        if(
+            (true === ($productStocksTotal instanceof ProductStockTotal))
+            && $productStocksTotal->getTotal() === $fourTochkiGetFindTyreResult->getQuantity()
+        )
+        {
+            /** Не обновляем если остатки равны */
+            return;
+        }
+
+
         /** Если отсутствует место складирования - создаем на указанный профиль пользователя */
         if(false === ($productStocksTotal instanceof ProductStockTotal))
         {
@@ -148,8 +158,16 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
         $productStockTotalEditDTO = new ProductStockTotalEditDTO();
         $productStocksTotal->getDto($productStockTotalEditDTO);
 
+        /**
+         * Может возникнуть ситуация, когда остаток 4tochki оказаться меньше нашего резерва
+         * в таком случае сохраняем в качестве total - наш резерв
+         */
         $productStockTotalEditDTO
-            ->setTotal($fourTochkiGetFindTyreResult->getQuantity())
+            ->setTotal(
+                $productStocksTotal->getReserve() > $fourTochkiGetFindTyreResult->getQuantity()
+                    ? $productStocksTotal->getReserve()
+                    : $fourTochkiGetFindTyreResult->getQuantity(),
+            )
             ->setStorage('4tochki')
             ->setRecalculate(true) // указываем пересчет в карточке товара для обновления маркетплейсов
         ;
