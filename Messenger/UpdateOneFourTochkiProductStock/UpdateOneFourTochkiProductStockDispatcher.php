@@ -104,6 +104,7 @@ final readonly class UpdateOneFourTochkiProductStockDispatcher
                 sprintf('Модель с артикулом %s не была найдена на складах 4tochki', $code),
                 [var_export($message, true), self::class.':'.__LINE__],
             );
+
             return;
         }
 

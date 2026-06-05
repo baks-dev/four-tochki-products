@@ -124,8 +124,9 @@ final readonly class UpdateOneFourTochkiProductPriceDispatcher
             transport: 'products-product',
         );
 
+        /** @note лог записывается для мониторинга, проверка совпадения цен в хендлере UseCase */
         $this->Logger->info(
-            sprintf('Цена продукции в карточке успешно обновлена => %s', $price->getRoundValue()),
+            sprintf('Отправили сообщение на обновление цены товара => %s', $price->getRoundValue()),
             [var_export($message, true), self::class.':'.__LINE__],
         );
     }
